@@ -2,46 +2,46 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react";
 
-// Mock data
+// Mock data - Solo predicciones futuras
 const mockData = [
-  { fecha: "Lun", ventas: 45000, prediccion: 47000 },
-  { fecha: "Mar", ventas: 52000, prediccion: 53000 },
-  { fecha: "Mié", ventas: 48000, prediccion: 49500 },
-  { fecha: "Jue", ventas: 61000, prediccion: 62000 },
-  { fecha: "Vie", ventas: 55000, prediccion: 56500 },
-  { fecha: "Sáb", ventas: 67000, prediccion: 68000 },
-  { fecha: "Dom", ventas: 43000, prediccion: 44000 },
+  { fecha: "Lun 23/12", prediccion: 47000, confianza: 94 },
+  { fecha: "Mar 24/12", prediccion: 53000, confianza: 92 },
+  { fecha: "Mié 25/12", prediccion: 72000, confianza: 88 },
+  { fecha: "Jue 26/12", prediccion: 65000, confianza: 90 },
+  { fecha: "Vie 27/12", prediccion: 58000, confianza: 91 },
+  { fecha: "Sáb 28/12", prediccion: 69000, confianza: 89 },
+  { fecha: "Dom 29/12", prediccion: 48000, confianza: 93 },
 ];
 
 const mockMetrics = [
   {
-    title: "Ventas Predichas",
-    value: "$68,000",
-    change: "+12.5%",
+    title: "Venta Máxima Predicha",
+    value: "$72,000",
+    description: "Miércoles 25/12",
     icon: DollarSign,
     color: "text-primary",
     bg: "bg-primary/10",
   },
   {
-    title: "Precisión del Modelo",
-    value: "94.2%",
-    change: "+2.1%",
-    icon: Target,
-    color: "text-success",
-    bg: "bg-success/10",
-  },
-  {
-    title: "Tendencia",
-    value: "Positiva",
-    change: "+8.3%",
+    title: "Promedio Semanal",
+    value: "$58,857",
+    description: "7 días proyectados",
     icon: TrendingUp,
     color: "text-accent",
     bg: "bg-accent/10",
   },
   {
-    title: "Confianza",
-    value: "Alta",
-    change: "92%",
+    title: "Confianza Promedio",
+    value: "91%",
+    description: "Alta precisión",
+    icon: Target,
+    color: "text-success",
+    bg: "bg-success/10",
+  },
+  {
+    title: "Total Proyectado",
+    value: "$412,000",
+    description: "Semana completa",
     icon: Activity,
     color: "text-primary",
     bg: "bg-primary/10",
@@ -73,8 +73,8 @@ const Results = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metric.value}</div>
-              <p className="text-xs text-success mt-1">
-                {metric.change} desde el último período
+              <p className="text-xs text-muted-foreground mt-1">
+                {metric.description}
               </p>
             </CardContent>
           </Card>
@@ -84,17 +84,24 @@ const Results = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="shadow-card border-border">
           <CardHeader>
-            <CardTitle>Tendencia de Ventas</CardTitle>
+            <CardTitle>Predicción de Ventas</CardTitle>
             <CardDescription>
-              Comparación entre ventas reales y predicciones
+              Proyección de ventas para los próximos 7 días
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={mockData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="fecha" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
+                <XAxis 
+                  dataKey="fecha" 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
+                <YAxis 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "hsl(var(--card))",
@@ -105,18 +112,11 @@ const Results = () => {
                 <Legend />
                 <Line
                   type="monotone"
-                  dataKey="ventas"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2}
-                  name="Ventas Reales"
-                />
-                <Line
-                  type="monotone"
                   dataKey="prediccion"
-                  stroke="hsl(var(--accent))"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  name="Predicción"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={3}
+                  name="Ventas Predichas"
+                  dot={{ fill: "hsl(var(--primary))", r: 5 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -125,17 +125,24 @@ const Results = () => {
 
         <Card className="shadow-card border-border">
           <CardHeader>
-            <CardTitle>Análisis Comparativo</CardTitle>
+            <CardTitle>Distribución Semanal</CardTitle>
             <CardDescription>
-              Distribución semanal de ventas
+              Volumen de ventas proyectado por día
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={mockData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="fecha" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
+                <XAxis 
+                  dataKey="fecha" 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
+                <YAxis 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "hsl(var(--card))",
@@ -144,8 +151,12 @@ const Results = () => {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="ventas" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} name="Ventas Reales" />
-                <Bar dataKey="prediccion" fill="hsl(var(--accent))" radius={[8, 8, 0, 0]} name="Predicción" />
+                <Bar 
+                  dataKey="prediccion" 
+                  fill="hsl(var(--accent))" 
+                  radius={[8, 8, 0, 0]} 
+                  name="Ventas Predichas" 
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -156,7 +167,7 @@ const Results = () => {
         <CardHeader>
           <CardTitle>Tabla de Predicciones Detallada</CardTitle>
           <CardDescription>
-            Datos históricos y predicciones semanales
+            Proyección completa de ventas para la próxima semana
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -165,30 +176,36 @@ const Results = () => {
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left py-3 px-4 font-semibold">Fecha</th>
-                  <th className="text-right py-3 px-4 font-semibold">Ventas Reales</th>
-                  <th className="text-right py-3 px-4 font-semibold">Predicción</th>
-                  <th className="text-right py-3 px-4 font-semibold">Diferencia</th>
-                  <th className="text-right py-3 px-4 font-semibold">Precisión</th>
+                  <th className="text-right py-3 px-4 font-semibold">Ventas Predichas</th>
+                  <th className="text-right py-3 px-4 font-semibold">Rango Mínimo</th>
+                  <th className="text-right py-3 px-4 font-semibold">Rango Máximo</th>
+                  <th className="text-right py-3 px-4 font-semibold">Confianza</th>
                 </tr>
               </thead>
               <tbody>
                 {mockData.map((row, index) => {
-                  const diff = row.prediccion - row.ventas;
-                  const accuracy = ((1 - Math.abs(diff) / row.ventas) * 100).toFixed(1);
+                  const minRange = Math.floor(row.prediccion * 0.92);
+                  const maxRange = Math.floor(row.prediccion * 1.08);
                   return (
                     <tr key={index} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
-                      <td className="py-3 px-4">{row.fecha}</td>
-                      <td className="text-right py-3 px-4 font-medium">
-                        ${row.ventas.toLocaleString()}
-                      </td>
-                      <td className="text-right py-3 px-4 font-medium text-accent">
+                      <td className="py-3 px-4 font-medium">{row.fecha}</td>
+                      <td className="text-right py-3 px-4 font-bold text-primary">
                         ${row.prediccion.toLocaleString()}
                       </td>
-                      <td className={`text-right py-3 px-4 font-medium ${diff >= 0 ? "text-success" : "text-destructive"}`}>
-                        {diff >= 0 ? "+" : ""}${diff.toLocaleString()}
+                      <td className="text-right py-3 px-4 font-medium text-muted-foreground">
+                        ${minRange.toLocaleString()}
                       </td>
-                      <td className="text-right py-3 px-4 font-medium text-success">
-                        {accuracy}%
+                      <td className="text-right py-3 px-4 font-medium text-muted-foreground">
+                        ${maxRange.toLocaleString()}
+                      </td>
+                      <td className="text-right py-3 px-4">
+                        <span className={`font-medium ${
+                          row.confianza >= 90 ? "text-success" : 
+                          row.confianza >= 85 ? "text-accent" : 
+                          "text-muted-foreground"
+                        }`}>
+                          {row.confianza}%
+                        </span>
                       </td>
                     </tr>
                   );
