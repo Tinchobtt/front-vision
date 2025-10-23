@@ -52,14 +52,6 @@ const mockMetrics = [
 
 const Results = () => {
 
-    const test = async () => {
-        await testAPI()
-    }
-
-    useEffect(()=>{
-        test()
-    }, [])
-
     return (
         <div className="space-y-8 animate-fade-in">
             <div className="text-center space-y-2">

@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
               </div>
               <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent truncate">
-                SalesPredictor AI
+                Vision AI
               </h1>
             </div>
             <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">

@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import FileUpload from "@/components/FileUpload";
-import DateRangePicker from "@/components/DateRangePicker";
-import { useToast } from "@/hooks/use-toast";
-import { Sparkles, TrendingUp } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import FileUpload from "@/components/FileUpload"
+import DateRangePicker from "@/components/DateRangePicker"
+import { useToast } from "@/hooks/use-toast"
+import { Sparkles, TrendingUp } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { testAPI } from '../api/services/test.js'
 
 const Training = () => {
     const [file, setFile] = useState<File | null>(null);
@@ -25,15 +26,9 @@ const Training = () => {
         }
 
         setIsLoading(true);
-        // Simular upload
-        setTimeout(() => {
-            setIsLoading(false);
-            toast({
-                title: "Éxito",
-                description: "Datos cargados correctamente. El modelo se está entrenando.",
-            })
-        }, 2000)
-    };
+        
+        const response = await testAPI(file)
+    }
 
     const handlePredict = async () => {
         if (!predictionDate) {
@@ -83,7 +78,9 @@ const Training = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <FileUpload onFileSelect={setFile} />
+                    <FileUpload 
+                        onFileSelect={setFile} 
+                    />
                     <Button
                         onClick={handleUpload}
                         disabled={!file || isLoading}
