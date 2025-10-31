@@ -81,7 +81,58 @@ const Results = () => {
                     </Card>
                 ))}
             </div>
-
+            <Card className="shadow-card border-border">
+                <CardHeader>
+                    <CardTitle>Tabla de Predicciones Detallada</CardTitle>
+                    <CardDescription>
+                        Proyección completa de ventas para la próxima semana
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b border-border">
+                                <th className="text-left py-3 px-4 font-semibold">Fecha</th>
+                                <th className="text-right py-3 px-4 font-semibold">Ventas Predichas</th>
+                                <th className="text-right py-3 px-4 font-semibold">Rango Mínimo</th>
+                                <th className="text-right py-3 px-4 font-semibold">Rango Máximo</th>
+                                <th className="text-right py-3 px-4 font-semibold">Confianza</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {mockData.map((row, index) => {
+                                    const minRange = Math.floor(row.prediccion * 0.92)
+                                    const maxRange = Math.floor(row.prediccion * 1.08)
+                                    return (
+                                        <tr key={index} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
+                                        <td className="py-3 px-4 font-medium">{row.fecha}</td>
+                                        <td className="text-right py-3 px-4 font-bold text-primary">
+                                            ${row.prediccion.toLocaleString()}
+                                        </td>
+                                        <td className="text-right py-3 px-4 font-medium text-muted-foreground">
+                                            ${minRange.toLocaleString()}
+                                        </td>
+                                        <td className="text-right py-3 px-4 font-medium text-muted-foreground">
+                                            ${maxRange.toLocaleString()}
+                                        </td>
+                                        <td className="text-right py-3 px-4">
+                                            <span className={`font-medium ${
+                                                row.confianza >= 90 ? "text-success" : 
+                                                row.confianza >= 85 ? "text-accent" : 
+                                                "text-muted-foreground"
+                                            }`}>
+                                            {row.confianza}%
+                                            </span>
+                                        </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
+            </Card>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="shadow-card border-border">
                     <CardHeader>
@@ -164,58 +215,7 @@ const Results = () => {
                 </Card>
             </div>
 
-            <Card className="shadow-card border-border">
-                <CardHeader>
-                    <CardTitle>Tabla de Predicciones Detallada</CardTitle>
-                    <CardDescription>
-                        Proyección completa de ventas para la próxima semana
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-border">
-                                <th className="text-left py-3 px-4 font-semibold">Fecha</th>
-                                <th className="text-right py-3 px-4 font-semibold">Ventas Predichas</th>
-                                <th className="text-right py-3 px-4 font-semibold">Rango Mínimo</th>
-                                <th className="text-right py-3 px-4 font-semibold">Rango Máximo</th>
-                                <th className="text-right py-3 px-4 font-semibold">Confianza</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {mockData.map((row, index) => {
-                                    const minRange = Math.floor(row.prediccion * 0.92)
-                                    const maxRange = Math.floor(row.prediccion * 1.08)
-                                    return (
-                                        <tr key={index} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
-                                        <td className="py-3 px-4 font-medium">{row.fecha}</td>
-                                        <td className="text-right py-3 px-4 font-bold text-primary">
-                                            ${row.prediccion.toLocaleString()}
-                                        </td>
-                                        <td className="text-right py-3 px-4 font-medium text-muted-foreground">
-                                            ${minRange.toLocaleString()}
-                                        </td>
-                                        <td className="text-right py-3 px-4 font-medium text-muted-foreground">
-                                            ${maxRange.toLocaleString()}
-                                        </td>
-                                        <td className="text-right py-3 px-4">
-                                            <span className={`font-medium ${
-                                                row.confianza >= 90 ? "text-success" : 
-                                                row.confianza >= 85 ? "text-accent" : 
-                                                "text-muted-foreground"
-                                            }`}>
-                                            {row.confianza}%
-                                            </span>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </CardContent>
-            </Card>
+
         </div>
     )
 }
