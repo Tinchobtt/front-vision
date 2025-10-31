@@ -29,7 +29,7 @@ const Training = () => {
         // Simular predicción
         const response = await testAPI(file)
 
-        if(response.status == 200){
+        if(response.status_code == 200){
             setIsLoading(false)
             toast({
                 title: "Predicción completada",
