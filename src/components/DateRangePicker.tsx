@@ -27,7 +27,7 @@ const DateRangePicker = ({ onDateSelect }: DateRangePickerProps) => {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="w-full justify-start text-left font-normal border-border hover:border-primary transition-all"
+          className="w-full justify-start text-left font-normal border-border hover:border-primary hover:bg-transparent transition-all"
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
