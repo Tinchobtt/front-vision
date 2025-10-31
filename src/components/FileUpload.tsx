@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File | null) => void;
 }
 
 const FileUpload = ({ onFileSelect }: FileUploadProps) => {
@@ -60,6 +60,7 @@ const FileUpload = ({ onFileSelect }: FileUploadProps) => {
 
   const handleRemove = () => {
     setSelectedFile(null);
+    onFileSelect(null);
   };
 
   return (
