@@ -6,6 +6,7 @@ import DateRangePicker from "@/components/DateRangePicker"
 import { useToast } from "@/hooks/use-toast"
 import { Sparkles, TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { testAPI } from "../api/services/test"
 
 const Training = () => {
     const [file, setFile] = useState<File | null>(null);
@@ -26,14 +27,16 @@ const Training = () => {
 
         setIsLoading(true);
         // Simular predicción
-        setTimeout(() => {
+        const response = await testAPI(file)
+
+        if(response.status == 200){
             setIsLoading(false)
             toast({
                 title: "Predicción completada",
                 description: "Los resultados están listos para visualizar.",
             })
             navigate("/resultados")
-        }, 2000)
+        }
     }
 
     const handlePredict = async () => {
