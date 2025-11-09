@@ -79,6 +79,7 @@ const Training = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <FileUpload 
+                        file={file}
                         onFileSelect={setFile} 
                     />
                     <Button

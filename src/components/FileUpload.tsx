@@ -5,11 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
+  file?: File | null;
 }
 
-const FileUpload = ({ onFileSelect }: FileUploadProps) => {
+const FileUpload = ({ onFileSelect, file }: FileUploadProps) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -27,13 +27,12 @@ const FileUpload = ({ onFileSelect }: FileUploadProps) => {
       e.preventDefault();
       setIsDragging(false);
 
-      const file = e.dataTransfer.files[0];
-      if (file && file.name.endsWith(".xlsx")) {
-        setSelectedFile(file);
-        onFileSelect(file);
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile && droppedFile.name.endsWith(".xlsx")) {
+        onFileSelect(droppedFile);
         toast({
           title: "Archivo cargado",
-          description: `${file.name} está listo para subir.`,
+          description: `${droppedFile.name} está listo para subir.`,
         });
       } else {
         toast({
@@ -47,25 +46,23 @@ const FileUpload = ({ onFileSelect }: FileUploadProps) => {
   );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      onFileSelect(file);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      onFileSelect(selectedFile);
       toast({
         title: "Archivo cargado",
-        description: `${file.name} está listo para subir.`,
+        description: `${selectedFile.name} está listo para subir.`,
       });
     }
   };
 
   const handleRemove = () => {
-    setSelectedFile(null);
     onFileSelect(null);
   };
 
   return (
     <div className="w-full">
-      {!selectedFile ? (
+      {!file ? (
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -107,9 +104,9 @@ const FileUpload = ({ onFileSelect }: FileUploadProps) => {
                 <FileSpreadsheet className="h-6 w-6 text-success" />
               </div>
               <div>
-                <p className="font-medium">{selectedFile.name}</p>
+                <p className="font-medium">{file.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {(selectedFile.size / 1024).toFixed(2)} KB
+                  {(file.size / 1024).toFixed(2)} KB
                 </p>
               </div>
             </div>
