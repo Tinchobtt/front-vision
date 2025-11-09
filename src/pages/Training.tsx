@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Sparkles, TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { testAPI, predict} from "../api/services/test"
+import { useDataContext } from "../context/DataContext"
 
 const Training = () => {
     const [file, setFile] = useState<File | null>(null);
@@ -14,6 +15,7 @@ const Training = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
     const navigate = useNavigate();
+    const { setData } = useDataContext()
 
     const handleUpload = async () => {
         if (!file) {
@@ -43,6 +45,7 @@ const Training = () => {
         const response = await predict()
 
         if(response.status_code == 200){
+            setData(response.data)
             setIsLoading(false)
             toast({
                 title: "Predicción completada",

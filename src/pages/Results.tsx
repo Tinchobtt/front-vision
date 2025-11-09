@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react"
+import { useDataContext } from "../context/DataContext"
 
 // Mock data - Solo predicciones futuras
 const mockData = [
@@ -49,7 +50,8 @@ const mockMetrics = [
 ]
 
 const Results = () => {
-
+    const { data } = useDataContext()
+    
     return (
         <div className="space-y-8 animate-fade-in">
             <div className="text-center space-y-2">
@@ -214,8 +216,6 @@ const Results = () => {
                     </CardContent>
                 </Card>
             </div>
-
-
         </div>
     )
 }
