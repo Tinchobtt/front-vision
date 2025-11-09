@@ -25,8 +25,7 @@ const Training = () => {
             return
         }
 
-        setIsLoading(true);
-        // Simular predicción
+        setIsLoading(true)
         const response = await testAPI(file)
 
         if(response.status_code == 200){
@@ -35,23 +34,14 @@ const Training = () => {
                 title: "Predicción completada",
                 description: "Los resultados están listos para visualizar.",
             })
-            navigate("/resultados")
+            setFile(null)
         }
     }
 
     const handlePredict = async () => {
-        if (!predictionDate) {
-            toast({
-                title: "Error",
-                description: "Por favor, selecciona una fecha para la predicción",
-                variant: "destructive",
-            })
-            return
-        }
-
         setIsLoading(true);
-        // Simular predicción
         const response = await predict()
+
         if(response.status_code == 200){
             setIsLoading(false)
             toast({
@@ -116,10 +106,10 @@ const Training = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <DateRangePicker onDateSelect={setPredictionDate} />
+                    {/* <DateRangePicker onDateSelect={setPredictionDate} /> */}
                     <Button
                         onClick={handlePredict}
-                        disabled={!predictionDate || isLoading}
+                        disabled={isLoading}
                         className="w-full bg-accent hover:bg-accent/90 text-accent-foreground shadow-glow transition-all"
                     >
                         {isLoading ? "Procesando..." : "Generar Predicción"}
