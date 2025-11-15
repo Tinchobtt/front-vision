@@ -11,10 +11,10 @@ const mockData = [
         prediccion: 47000, 
         confianza: 94,
         productos: [
-            { nombre: "Producto A", ventas: 15000 },
-            { nombre: "Producto B", ventas: 12000 },
-            { nombre: "Producto C", ventas: 10000 },
-            { nombre: "Producto D", ventas: 10000 },
+            { nombre: "Producto A", cantidad: 150 },
+            { nombre: "Producto B", cantidad: 120 },
+            { nombre: "Producto C", cantidad: 100 },
+            { nombre: "Producto D", cantidad: 85 },
         ]
     },
     { 
@@ -22,10 +22,10 @@ const mockData = [
         prediccion: 53000, 
         confianza: 92,
         productos: [
-            { nombre: "Producto A", ventas: 18000 },
-            { nombre: "Producto B", ventas: 14000 },
-            { nombre: "Producto C", ventas: 11000 },
-            { nombre: "Producto D", ventas: 10000 },
+            { nombre: "Producto A", cantidad: 180 },
+            { nombre: "Producto B", cantidad: 140 },
+            { nombre: "Producto C", cantidad: 110 },
+            { nombre: "Producto D", cantidad: 95 },
         ]
     },
     { 
@@ -33,10 +33,10 @@ const mockData = [
         prediccion: 72000, 
         confianza: 88,
         productos: [
-            { nombre: "Producto A", ventas: 24000 },
-            { nombre: "Producto B", ventas: 20000 },
-            { nombre: "Producto C", ventas: 16000 },
-            { nombre: "Producto D", ventas: 12000 },
+            { nombre: "Producto A", cantidad: 240 },
+            { nombre: "Producto B", cantidad: 200 },
+            { nombre: "Producto C", cantidad: 160 },
+            { nombre: "Producto D", cantidad: 120 },
         ]
     },
     { 
@@ -44,10 +44,10 @@ const mockData = [
         prediccion: 65000, 
         confianza: 90,
         productos: [
-            { nombre: "Producto A", ventas: 21000 },
-            { nombre: "Producto B", ventas: 17000 },
-            { nombre: "Producto C", ventas: 15000 },
-            { nombre: "Producto D", ventas: 12000 },
+            { nombre: "Producto A", cantidad: 210 },
+            { nombre: "Producto B", cantidad: 170 },
+            { nombre: "Producto C", cantidad: 150 },
+            { nombre: "Producto D", cantidad: 110 },
         ]
     },
     { 
@@ -55,10 +55,10 @@ const mockData = [
         prediccion: 58000, 
         confianza: 91,
         productos: [
-            { nombre: "Producto A", ventas: 19000 },
-            { nombre: "Producto B", ventas: 15000 },
-            { nombre: "Producto C", ventas: 13000 },
-            { nombre: "Producto D", ventas: 11000 },
+            { nombre: "Producto A", cantidad: 190 },
+            { nombre: "Producto B", cantidad: 150 },
+            { nombre: "Producto C", cantidad: 130 },
+            { nombre: "Producto D", cantidad: 100 },
         ]
     },
     { 
@@ -66,10 +66,10 @@ const mockData = [
         prediccion: 69000, 
         confianza: 89,
         productos: [
-            { nombre: "Producto A", ventas: 23000 },
-            { nombre: "Producto B", ventas: 18000 },
-            { nombre: "Producto C", ventas: 16000 },
-            { nombre: "Producto D", ventas: 12000 },
+            { nombre: "Producto A", cantidad: 230 },
+            { nombre: "Producto B", cantidad: 180 },
+            { nombre: "Producto C", cantidad: 160 },
+            { nombre: "Producto D", cantidad: 115 },
         ]
     },
     { 
@@ -77,10 +77,10 @@ const mockData = [
         prediccion: 48000, 
         confianza: 93,
         productos: [
-            { nombre: "Producto A", ventas: 16000 },
-            { nombre: "Producto B", ventas: 13000 },
-            { nombre: "Producto C", ventas: 10000 },
-            { nombre: "Producto D", ventas: 9000 },
+            { nombre: "Producto A", cantidad: 160 },
+            { nombre: "Producto B", cantidad: 130 },
+            { nombre: "Producto C", cantidad: 100 },
+            { nombre: "Producto D", cantidad: 90 },
         ]
     },
 ]
@@ -192,7 +192,7 @@ const Results = () => {
                                     </AccordionTrigger>
                                     <AccordionContent>
                                         <div className="pt-4">
-                                            <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Predicción por Producto</h4>
+                                            <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Cantidad Predicha por Producto</h4>
                                             <div className="space-y-2">
                                                 {day.productos.map((producto, pIndex) => (
                                                     <div 
@@ -201,7 +201,7 @@ const Results = () => {
                                                     >
                                                         <span className="font-medium">{producto.nombre}</span>
                                                         <span className="font-bold text-primary">
-                                                            ${producto.ventas.toLocaleString()}
+                                                            {producto.cantidad} unidades
                                                         </span>
                                                     </div>
                                                 ))}
