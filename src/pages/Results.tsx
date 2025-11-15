@@ -2,16 +2,87 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react"
 import { useDataContext } from "../context/DataContext"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 // Mock data - Solo predicciones futuras
 const mockData = [
-    { fecha: "Lun 23/12", prediccion: 47000, confianza: 94 },
-    { fecha: "Mar 24/12", prediccion: 53000, confianza: 92 },
-    { fecha: "Mié 25/12", prediccion: 72000, confianza: 88 },
-    { fecha: "Jue 26/12", prediccion: 65000, confianza: 90 },
-    { fecha: "Vie 27/12", prediccion: 58000, confianza: 91 },
-    { fecha: "Sáb 28/12", prediccion: 69000, confianza: 89 },
-    { fecha: "Dom 29/12", prediccion: 48000, confianza: 93 },
+    { 
+        fecha: "Lun 23/12", 
+        prediccion: 47000, 
+        confianza: 94,
+        productos: [
+            { nombre: "Producto A", ventas: 15000 },
+            { nombre: "Producto B", ventas: 12000 },
+            { nombre: "Producto C", ventas: 10000 },
+            { nombre: "Producto D", ventas: 10000 },
+        ]
+    },
+    { 
+        fecha: "Mar 24/12", 
+        prediccion: 53000, 
+        confianza: 92,
+        productos: [
+            { nombre: "Producto A", ventas: 18000 },
+            { nombre: "Producto B", ventas: 14000 },
+            { nombre: "Producto C", ventas: 11000 },
+            { nombre: "Producto D", ventas: 10000 },
+        ]
+    },
+    { 
+        fecha: "Mié 25/12", 
+        prediccion: 72000, 
+        confianza: 88,
+        productos: [
+            { nombre: "Producto A", ventas: 24000 },
+            { nombre: "Producto B", ventas: 20000 },
+            { nombre: "Producto C", ventas: 16000 },
+            { nombre: "Producto D", ventas: 12000 },
+        ]
+    },
+    { 
+        fecha: "Jue 26/12", 
+        prediccion: 65000, 
+        confianza: 90,
+        productos: [
+            { nombre: "Producto A", ventas: 21000 },
+            { nombre: "Producto B", ventas: 17000 },
+            { nombre: "Producto C", ventas: 15000 },
+            { nombre: "Producto D", ventas: 12000 },
+        ]
+    },
+    { 
+        fecha: "Vie 27/12", 
+        prediccion: 58000, 
+        confianza: 91,
+        productos: [
+            { nombre: "Producto A", ventas: 19000 },
+            { nombre: "Producto B", ventas: 15000 },
+            { nombre: "Producto C", ventas: 13000 },
+            { nombre: "Producto D", ventas: 11000 },
+        ]
+    },
+    { 
+        fecha: "Sáb 28/12", 
+        prediccion: 69000, 
+        confianza: 89,
+        productos: [
+            { nombre: "Producto A", ventas: 23000 },
+            { nombre: "Producto B", ventas: 18000 },
+            { nombre: "Producto C", ventas: 16000 },
+            { nombre: "Producto D", ventas: 12000 },
+        ]
+    },
+    { 
+        fecha: "Dom 29/12", 
+        prediccion: 48000, 
+        confianza: 93,
+        productos: [
+            { nombre: "Producto A", ventas: 16000 },
+            { nombre: "Producto B", ventas: 13000 },
+            { nombre: "Producto C", ventas: 10000 },
+            { nombre: "Producto D", ventas: 9000 },
+        ]
+    },
 ]
 
 const mockMetrics = [
@@ -85,54 +156,62 @@ const Results = () => {
             </div>
             <Card className="shadow-card border-border">
                 <CardHeader>
-                    <CardTitle>Tabla de Predicciones Detallada</CardTitle>
+                    <CardTitle>Predicciones por Día</CardTitle>
                     <CardDescription>
-                        Proyección completa de ventas para la próxima semana
+                        Proyección detallada de ventas por producto para cada día
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-border">
-                                <th className="text-left py-3 px-4 font-semibold">Fecha</th>
-                                <th className="text-right py-3 px-4 font-semibold">Ventas Predichas</th>
-                                <th className="text-right py-3 px-4 font-semibold">Rango Mínimo</th>
-                                <th className="text-right py-3 px-4 font-semibold">Rango Máximo</th>
-                                <th className="text-right py-3 px-4 font-semibold">Confianza</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {mockData.map((row, index) => {
-                                    const minRange = Math.floor(row.prediccion * 0.92)
-                                    const maxRange = Math.floor(row.prediccion * 1.08)
-                                    return (
-                                        <tr key={index} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
-                                        <td className="py-3 px-4 font-medium">{row.fecha}</td>
-                                        <td className="text-right py-3 px-4 font-bold text-primary">
-                                            ${row.prediccion.toLocaleString()}
-                                        </td>
-                                        <td className="text-right py-3 px-4 font-medium text-muted-foreground">
-                                            ${minRange.toLocaleString()}
-                                        </td>
-                                        <td className="text-right py-3 px-4 font-medium text-muted-foreground">
-                                            ${maxRange.toLocaleString()}
-                                        </td>
-                                        <td className="text-right py-3 px-4">
-                                            <span className={`font-medium ${
-                                                row.confianza >= 90 ? "text-success" : 
-                                                row.confianza >= 85 ? "text-accent" : 
-                                                "text-muted-foreground"
-                                            }`}>
-                                            {row.confianza}%
-                                            </span>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+                    <Accordion type="single" collapsible className="w-full">
+                        {mockData.map((day, index) => {
+                            const minRange = Math.floor(day.prediccion * 0.92)
+                            const maxRange = Math.floor(day.prediccion * 1.08)
+                            return (
+                                <AccordionItem key={index} value={`day-${index}`}>
+                                    <AccordionTrigger className="hover:no-underline">
+                                        <div className="flex items-center justify-between w-full pr-4">
+                                            <div className="flex items-center gap-4">
+                                                <span className="font-semibold text-base">{day.fecha}</span>
+                                                <span className="text-sm text-muted-foreground">
+                                                    Total: <span className="font-bold text-primary">${day.prediccion.toLocaleString()}</span>
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className="text-xs text-muted-foreground">
+                                                    Rango: ${minRange.toLocaleString()} - ${maxRange.toLocaleString()}
+                                                </span>
+                                                <span className={`text-sm font-medium ${
+                                                    day.confianza >= 90 ? "text-success" : 
+                                                    day.confianza >= 85 ? "text-accent" : 
+                                                    "text-muted-foreground"
+                                                }`}>
+                                                    {day.confianza}% confianza
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="pt-4">
+                                            <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Predicción por Producto</h4>
+                                            <div className="space-y-2">
+                                                {day.productos.map((producto, pIndex) => (
+                                                    <div 
+                                                        key={pIndex} 
+                                                        className="flex items-center justify-between py-3 px-4 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
+                                                    >
+                                                        <span className="font-medium">{producto.nombre}</span>
+                                                        <span className="font-bold text-primary">
+                                                            ${producto.ventas.toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            )
+                        })}
+                    </Accordion>
                 </CardContent>
             </Card>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
