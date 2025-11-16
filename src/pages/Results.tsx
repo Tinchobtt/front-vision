@@ -1,8 +1,8 @@
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react"
 import { useDataContext } from "../context/DataContext"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 // Mock data - Solo predicciones futuras
 const mockData = [
@@ -132,8 +132,32 @@ type DiaAgrupado = {
 
 const Results = () => {
     const { data } = useDataContext()
+    const [showAllProducts, setShowAllProducts] = React.useState(false)
     
-    const groupByDateObj = data.reduce((acc, item) => {
+    // Check if data is empty
+    if (!data || data.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 animate-fade-in">
+                <div className="text-center space-y-2">
+                    <h2 className="text-3xl font-bold tracking-tight">
+                        No hay predicciones disponibles
+                    </h2>
+                    <p className="text-muted-foreground">
+                        Debes realizar una predicción antes de ver los resultados
+                    </p>
+                </div>
+                <Card className="max-w-md shadow-card border-border">
+                    <CardContent className="pt-6">
+                        <p className="text-sm text-muted-foreground text-center">
+                            Ve a la página de entrenamiento y carga tus datos para generar predicciones de ventas.
+                        </p>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+    
+    const groupByDateObj = data.reduce((acc: Record<string, Producto[]>, item: any) => {
         const date = item.fecha_prediccion
 
         if (!acc[date]) {
@@ -149,23 +173,34 @@ const Results = () => {
     }, {})
 
     const groupByDate: DiaAgrupado[] = Object.entries(groupByDateObj).map(
-        ([fecha, productos]) => ({
+        ([fecha, productos]: [string, Producto[]]) => ({
             fecha,
-            productos: productos as Producto[]
+            productos
         })
     )
     
-    const getDiaSemanaFromDate = (fechaString) => {
-        const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    // Get all unique products
+    const allProducts: string[] = Array.from(
+        new Set(data.map((item: any) => item.nombre as string))
+    )
+    
+    const productsToShow: string[] = showAllProducts ? allProducts : allProducts.slice(0, 15)
+    
+    const getDiaSemanaFromDate = (fechaString: string) => {
+        const dias = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
         const fecha = new Date(fechaString);
 
         const diaSemana = dias[fecha.getDay()];
 
         const dia = fecha.getDate().toString().padStart(2, "0");
         const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-        const anio = fecha.getFullYear();
 
-        return `${diaSemana} - ${dia}/${mes}/${anio}`;
+        return `${diaSemana} ${dia}/${mes}`;
+    }
+    
+    const getCantidadForProductAndDate = (productName: string, fecha: string) => {
+        const item = data.find((d: any) => d.nombre === productName && d.fecha_prediccion === fecha)
+        return item ? Math.round(item.pred_cantidad) : 0
     }
 
     return (
@@ -201,62 +236,50 @@ const Results = () => {
             </div>
             <Card className="shadow-card border-border">
                 <CardHeader>
-                    <CardTitle>Predicciones por Día</CardTitle>
+                    <CardTitle>Predicciones por Producto</CardTitle>
                     <CardDescription>
-                        Proyección detallada de ventas por producto para cada día
+                        Cantidades predichas para cada producto en los próximos días
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        {groupByDate.map((day, index) => {
-                            // const minRange = Math.floor(day.prediccion * 0.92)
-                            // const maxRange = Math.floor(day.prediccion * 1.08)
-                            return (
-                                <AccordionItem key={index} value={`day-${index}`}>
-                                    <AccordionTrigger className="hover:no-underline">
-                                        <div className="flex items-center justify-between w-full pr-4">
-                                            <div className="flex items-center gap-4">
-                                                <span className="font-semibold text-base">{getDiaSemanaFromDate(day.fecha)}</span>
-                                                {/* <span className="text-sm text-muted-foreground">
-                                                    Total: <span className="font-bold text-primary">${day.prediccion.toLocaleString()}</span>
-                                                </span> */}
-                                            </div>
-                                            {/* <div className="flex items-center gap-4">
-                                                <span className="text-xs text-muted-foreground">
-                                                    Rango: ${minRange.toLocaleString()} - ${maxRange.toLocaleString()}
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b border-border">
+                                    <th className="text-left py-3 px-4 font-semibold text-sm">Producto</th>
+                                    {groupByDate.map((day, index) => (
+                                        <th key={index} className="text-center py-3 px-2 font-semibold text-sm">
+                                            {getDiaSemanaFromDate(day.fecha)}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {productsToShow.map((productName, pIndex) => (
+                                    <tr key={pIndex} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
+                                        <td className="py-3 px-4 font-medium">{productName}</td>
+                                        {groupByDate.map((day, dIndex) => (
+                                            <td key={dIndex} className="text-center py-3 px-2">
+                                                <span className="font-bold text-primary">
+                                                    {getCantidadForProductAndDate(productName, day.fecha)}
                                                 </span>
-                                                <span className={`text-sm font-medium ${
-                                                    day.confianza >= 90 ? "text-success" : 
-                                                    day.confianza >= 85 ? "text-accent" : 
-                                                    "text-muted-foreground"
-                                                }`}>
-                                                    {day.confianza}% confianza
-                                                </span>
-                                            </div> */}
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <div className="pt-4">
-                                            <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Cantidad Predicha por Producto</h4>
-                                            <div className="space-y-2">
-                                                {day.productos.map((producto, pIndex) => (
-                                                    <div 
-                                                        key={pIndex} 
-                                                        className="flex items-center justify-between py-2 px-2 rounded-lg bg-secondary/100 hover:bg-secondary/100 transition-colors"
-                                                    >
-                                                        <span className="font-medium">{producto.nombre}</span>
-                                                        <span className="font-bold text-primary">
-                                                            {Math.round(producto.cantidad)} unidades
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            )
-                        })}
-                    </Accordion>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    {allProducts.length > 15 && (
+                        <div className="mt-4 flex justify-center">
+                            <button
+                                onClick={() => setShowAllProducts(!showAllProducts)}
+                                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+                            >
+                                {showAllProducts ? 'Ver menos' : `Ver más (+${allProducts.length - 15})`}
+                            </button>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
