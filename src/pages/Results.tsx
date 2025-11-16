@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react"
 import { useDataContext } from "../context/DataContext"
@@ -132,7 +133,6 @@ type DiaAgrupado = {
 
 const Results = () => {
     const { data } = useDataContext()
-    const [showAllProducts, setShowAllProducts] = React.useState(false)
     
     // Check if data is empty
     if (!data || data.length === 0) {
@@ -184,7 +184,7 @@ const Results = () => {
         new Set(data.map((item: any) => item.nombre as string))
     )
     
-    const productsToShow: string[] = showAllProducts ? allProducts : allProducts.slice(0, 15)
+    const productsToShow: string[] = allProducts.slice(0, 10)
     
     const getDiaSemanaFromDate = (fechaString: string) => {
         const dias = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -242,44 +242,36 @@ const Results = () => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-border">
-                                    <th className="text-left py-3 px-4 font-semibold text-sm">Producto</th>
-                                    {groupByDate.map((day, index) => (
-                                        <th key={index} className="text-center py-3 px-2 font-semibold text-sm">
-                                            {getDiaSemanaFromDate(day.fecha)}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {productsToShow.map((productName, pIndex) => (
-                                    <tr key={pIndex} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
-                                        <td className="py-3 px-4 font-medium">{productName}</td>
-                                        {groupByDate.map((day, dIndex) => (
-                                            <td key={dIndex} className="text-center py-3 px-2">
-                                                <span className="font-bold text-primary">
-                                                    {getCantidadForProductAndDate(productName, day.fecha)}
-                                                </span>
-                                            </td>
+                    <ScrollArea className="h-[400px]">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-border">
+                                        <th className="text-left py-3 px-4 font-semibold text-sm">Producto</th>
+                                        {groupByDate.map((day, index) => (
+                                            <th key={index} className="text-center py-3 px-2 font-semibold text-sm">
+                                                {getDiaSemanaFromDate(day.fecha)}
+                                            </th>
                                         ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    {allProducts.length > 15 && (
-                        <div className="mt-4 flex justify-center">
-                            <button
-                                onClick={() => setShowAllProducts(!showAllProducts)}
-                                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
-                            >
-                                {showAllProducts ? 'Ver menos' : `Ver más (+${allProducts.length - 15})`}
-                            </button>
+                                </thead>
+                                <tbody>
+                                    {productsToShow.map((productName, pIndex) => (
+                                        <tr key={pIndex} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
+                                            <td className="py-3 px-4 font-medium">{productName}</td>
+                                            {groupByDate.map((day, dIndex) => (
+                                                <td key={dIndex} className="text-center py-3 px-2">
+                                                    <span className="font-bold text-primary">
+                                                        {getCantidadForProductAndDate(productName, day.fecha)}
+                                                    </span>
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                    )}
+                    </ScrollArea>
                 </CardContent>
             </Card>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
