@@ -184,8 +184,6 @@ const Results = () => {
         new Set(data.map((item: any) => item.nombre as string))
     )
     
-    const productsToShow: string[] = allProducts.slice(0, 10)
-    
     const getDiaSemanaFromDate = (fechaString: string) => {
         const dias = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
         const fecha = new Date(fechaString);
@@ -256,7 +254,7 @@ const Results = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {productsToShow.map((productName, pIndex) => (
+                                    {allProducts.map((productName, pIndex) => (
                                         <tr key={pIndex} className="border-b border-border/50 hover:bg-secondary/50 transition-colors">
                                             <td className="py-3 px-4 font-medium">{productName}</td>
                                             {groupByDate.map((day, dIndex) => (
