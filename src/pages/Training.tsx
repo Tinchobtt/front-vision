@@ -10,11 +10,11 @@ import { testAPI, predict} from "../api/services/test"
 import { useDataContext } from "../context/DataContext"
 
 const Training = () => {
-    const [file, setFile] = useState<File | null>(null);
-    const [predictionDate, setPredictionDate] = useState<Date>();
-    const [isLoading, setIsLoading] = useState(false);
-    const { toast } = useToast();
-    const navigate = useNavigate();
+    const [file, setFile] = useState<File | null>(null)
+    const [predictionDate, setPredictionDate] = useState<Date>()
+    const [isLoading, setIsLoading] = useState(false)
+    const { toast } = useToast()
+    const navigate = useNavigate()
     const { setData } = useDataContext()
 
     const handleUpload = async () => {

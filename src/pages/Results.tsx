@@ -120,9 +120,54 @@ const mockMetrics = [
     },
 ]
 
+type Producto = {
+    nombre: string;
+    cantidad: number
+}
+
+type DiaAgrupado = {
+    fecha: string
+    productos: Producto[]
+}
+
 const Results = () => {
     const { data } = useDataContext()
     
+    const groupByDateObj = data.reduce((acc, item) => {
+        const date = item.fecha_prediccion
+
+        if (!acc[date]) {
+            acc[date] = []
+        }
+
+        acc[date].push({
+            nombre: item.nombre,
+            cantidad: item.pred_cantidad
+        })
+
+        return acc
+    }, {})
+
+    const groupByDate: DiaAgrupado[] = Object.entries(groupByDateObj).map(
+        ([fecha, productos]) => ({
+            fecha,
+            productos: productos as Producto[]
+        })
+    )
+    
+    const getDiaSemanaFromDate = (fechaString) => {
+        const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const fecha = new Date(fechaString);
+
+        const diaSemana = dias[fecha.getDay()];
+
+        const dia = fecha.getDate().toString().padStart(2, "0");
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+        const anio = fecha.getFullYear();
+
+        return `${diaSemana} - ${dia}/${mes}/${anio}`;
+    }
+
     return (
         <div className="space-y-8 animate-fade-in">
             <div className="text-center space-y-2">
@@ -163,20 +208,20 @@ const Results = () => {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        {mockData.map((day, index) => {
-                            const minRange = Math.floor(day.prediccion * 0.92)
-                            const maxRange = Math.floor(day.prediccion * 1.08)
+                        {groupByDate.map((day, index) => {
+                            // const minRange = Math.floor(day.prediccion * 0.92)
+                            // const maxRange = Math.floor(day.prediccion * 1.08)
                             return (
                                 <AccordionItem key={index} value={`day-${index}`}>
                                     <AccordionTrigger className="hover:no-underline">
                                         <div className="flex items-center justify-between w-full pr-4">
                                             <div className="flex items-center gap-4">
-                                                <span className="font-semibold text-base">{day.fecha}</span>
-                                                <span className="text-sm text-muted-foreground">
+                                                <span className="font-semibold text-base">{getDiaSemanaFromDate(day.fecha)}</span>
+                                                {/* <span className="text-sm text-muted-foreground">
                                                     Total: <span className="font-bold text-primary">${day.prediccion.toLocaleString()}</span>
-                                                </span>
+                                                </span> */}
                                             </div>
-                                            <div className="flex items-center gap-4">
+                                            {/* <div className="flex items-center gap-4">
                                                 <span className="text-xs text-muted-foreground">
                                                     Rango: ${minRange.toLocaleString()} - ${maxRange.toLocaleString()}
                                                 </span>
@@ -187,7 +232,7 @@ const Results = () => {
                                                 }`}>
                                                     {day.confianza}% confianza
                                                 </span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent>
@@ -197,11 +242,11 @@ const Results = () => {
                                                 {day.productos.map((producto, pIndex) => (
                                                     <div 
                                                         key={pIndex} 
-                                                        className="flex items-center justify-between py-3 px-4 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
+                                                        className="flex items-center justify-between py-2 px-2 rounded-lg bg-secondary/100 hover:bg-secondary/100 transition-colors"
                                                     >
                                                         <span className="font-medium">{producto.nombre}</span>
                                                         <span className="font-bold text-primary">
-                                                            {producto.cantidad} unidades
+                                                            {Math.round(producto.cantidad)} unidades
                                                         </span>
                                                     </div>
                                                 ))}
