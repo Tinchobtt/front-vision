@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { TrendingUp, DollarSign, Target, Activity } from "lucide-react"
+import { Apple, TableProperties, Target, Activity } from "lucide-react"
 import { useDataContext } from "../context/DataContext"
 
 // Mock data - Solo predicciones futuras
@@ -84,25 +84,6 @@ const mockData = [
             { nombre: "Producto D", cantidad: 90 },
         ]
     },
-]
-
-const mockMetrics = [
-    {
-        title: "Cantidad de productos",
-        value: "107",
-        description: "Miércoles 25/12",
-        icon: DollarSign,
-        color: "text-primary",
-        bg: "bg-primary/10",
-    },
-    {
-        title: "Promedio Semanal",
-        value: "$58,857",
-        description: "7 días proyectados",
-        icon: TrendingUp,
-        color: "text-accent",
-        bg: "bg-accent/10",
-    }
 ]
 
 type Producto = {
@@ -194,9 +175,39 @@ const Results = () => {
 
         return {
             ...item,
+            fecha: getDiaSemanaFromDate(item.fecha),
             prediccion: sumaCantidades
         }
     })
+
+    const getProductoMasVendido = (data) => {
+        const acumulado = {}
+
+        data.forEach(item => {
+            const nombre = item.nombre
+            const cantidad = item.pred_cantidad || 0
+
+            if (!acumulado[nombre]) {
+                acumulado[nombre] = 0;
+            }
+
+            acumulado[nombre] += cantidad;
+        });
+
+        let productoMasVendido = null
+        let maxCantidad = -Infinity
+
+        for (const nombre in acumulado) {
+            if (acumulado[nombre] > maxCantidad) {
+                maxCantidad = acumulado[nombre]
+                productoMasVendido = {
+                    nombre,
+                    cantidad: acumulado[nombre]
+                }
+            }
+        }
+        return productoMasVendido.nombre
+    }
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -210,24 +221,38 @@ const Results = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                {mockMetrics.map((metric) => (
-                    <Card key={metric.title} className="shadow-card border-border hover:shadow-glow transition-all duration-300">
+                    <Card className="shadow-card border-border hover:shadow-glow transition-all duration-300">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-medium text-muted-foreground">
-                                {metric.title}
+                                Cantidad de productos
                             </CardTitle>
-                            <div className={`h-8 w-8 rounded-lg ${metric.bg} flex items-center justify-center`}>
-                                <metric.icon className={`h-4 w-4 ${metric.color}`} />
+                            <div className={`h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center`}>
+                                <TableProperties className={`h-4 w-4 text-primary`} />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{metric.value}</div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                {metric.description}
-                            </p>
+                            <div className="text-2xl font-bold">{cantProducts}</div>
+                            {/* <p className="text-xs text-muted-foreground mt-1">
+                                {getDiaSemanaFromDate(data[0]["fecha_prediccion"])}
+                            </p> */}
                         </CardContent>
                     </Card>
-                ))}
+                    <Card className="shadow-card border-border hover:shadow-glow transition-all duration-300">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">
+                                Producto más vendido en la semana
+                            </CardTitle>
+                            <div className={`h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center`}>
+                                <Apple className={`h-4 w-4 text-accent`} />
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{getProductoMasVendido(data)}</div>
+                            {/* <p className="text-xs text-muted-foreground mt-1">
+                                7 días proyectados
+                            </p> */}
+                        </CardContent>
+                    </Card>
             </div>
             <Card className="shadow-card border-border">
                 <CardHeader>
