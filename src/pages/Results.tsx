@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
@@ -88,8 +88,8 @@ const mockData = [
 
 const mockMetrics = [
     {
-        title: "Venta Máxima Predicha",
-        value: "$72,000",
+        title: "Cantidad de productos",
+        value: "107",
         description: "Miércoles 25/12",
         icon: DollarSign,
         color: "text-primary",
@@ -102,23 +102,7 @@ const mockMetrics = [
         icon: TrendingUp,
         color: "text-accent",
         bg: "bg-accent/10",
-    },
-    {
-        title: "Confianza Promedio",
-        value: "91%",
-        description: "Alta precisión",
-        icon: Target,
-        color: "text-success",
-        bg: "bg-success/10",
-    },
-    {
-        title: "Total Proyectado",
-        value: "$412,000",
-        description: "Semana completa",
-        icon: Activity,
-        color: "text-primary",
-        bg: "bg-primary/10",
-    },
+    }
 ]
 
 type Producto = {
@@ -133,7 +117,8 @@ type DiaAgrupado = {
 
 const Results = () => {
     const { data } = useDataContext()
-    
+    const [ cantProducts, setCantProducts ] = useState(data.filter(item => item.fecha_prediccion == data[0]["fecha_prediccion"]).length)
+
     // Check if data is empty
     if (!data || data.length === 0) {
         return (
@@ -201,6 +186,18 @@ const Results = () => {
         return item ? Math.round(item.pred_cantidad) : 0
     }
 
+    const predicct = groupByDate.map(item => {
+        const sumaCantidades = item.productos.reduce(
+            (acc, prod) => acc + (prod.cantidad || 0),
+            0
+        )
+
+        return {
+            ...item,
+            prediccion: sumaCantidades
+        }
+    })
+
     return (
         <div className="space-y-8 animate-fade-in">
             <div className="text-center space-y-2">
@@ -212,7 +209,7 @@ const Results = () => {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 {mockMetrics.map((metric) => (
                     <Card key={metric.title} className="shadow-card border-border hover:shadow-glow transition-all duration-300">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -272,17 +269,17 @@ const Results = () => {
                     </ScrollArea>
                 </CardContent>
             </Card>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
                 <Card className="shadow-card border-border">
                     <CardHeader>
-                        <CardTitle>Predicción de Ventas</CardTitle>
+                        <CardTitle>Predicción de cantidad de productos vendidos</CardTitle>
                         <CardDescription>
-                            Proyección de ventas para los próximos 7 días
+                            Productos vendidos para los próximos 7 días
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <LineChart data={mockData}>
+                        <ResponsiveContainer width="100%" height={350}>
+                            <LineChart data={predicct}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                                 <XAxis 
                                     dataKey="fecha" 
@@ -314,7 +311,7 @@ const Results = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="shadow-card border-border">
+                {/* <Card className="shadow-card border-border">
                     <CardHeader>
                         <CardTitle>Distribución Semanal</CardTitle>
                         <CardDescription>
@@ -351,7 +348,7 @@ const Results = () => {
                             </BarChart>
                         </ResponsiveContainer>
                     </CardContent>
-                </Card>
+                </Card> */}
             </div>
         </div>
     )

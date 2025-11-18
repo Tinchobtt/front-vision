@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const testAPI = async (file) => {
+export const uploadFile = async (file) => {
     try {
         const formData = new FormData()
         formData.append("file", file)
@@ -12,8 +12,7 @@ export const testAPI = async (file) => {
         console.log("✅ Respuesta del servidor:", response.data)
         return response.data
     } catch (error) {
-        console.error("❌ Error al conectar con la API:", error.message)
-        throw error
+        return error.response
     }
 }
 
@@ -24,7 +23,6 @@ export const predict = async () => {
         console.log("✅ Respuesta del servidor:", response.data)
         return response.data
     } catch (error) {
-        console.error("❌ Error al conectar con la API:", error.message)
-        throw error
+        return error.response
     }
 }

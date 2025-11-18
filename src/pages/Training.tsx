@@ -1,4 +1,5 @@
 import { useState } from "react"
+import Swal from 'sweetalert2'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import FileUpload from "@/components/FileUpload"
@@ -6,7 +7,7 @@ import DateRangePicker from "@/components/DateRangePicker"
 import { useToast } from "@/hooks/use-toast"
 import { Sparkles, TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { testAPI, predict} from "../api/services/test"
+import { uploadFile, predict} from "../api/services/mvp"
 import { useDataContext } from "../context/DataContext"
 
 const Training = () => {
@@ -28,13 +29,22 @@ const Training = () => {
         }
 
         setIsLoading(true)
-        const response = await testAPI(file)
-
+        const response = await uploadFile(file)
+        
         if(response.status_code == 200){
             setIsLoading(false)
             toast({
                 title: "Predicción completada",
                 description: "Los resultados están listos para visualizar.",
+            })
+            setFile(null)
+        }else{
+            setIsLoading(false)
+            Swal.fire({
+                title: 'Error!',
+                text: response.data.detail,
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
             })
             setFile(null)
         }
@@ -52,6 +62,14 @@ const Training = () => {
                 description: "Los resultados están listos para visualizar.",
             })
             navigate("/resultados")
+        }else{
+            setIsLoading(false)
+            Swal.fire({
+                title: 'Error!',
+                text: response.data.detail,
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+            })
         }
     }
 
@@ -103,9 +121,9 @@ const Training = () => {
                         </div>
                         <div>
                         <CardTitle>Realizar Predicción</CardTitle>
-                        <CardDescription>
+                        {/* <CardDescription>
                             Selecciona una fecha para predecir las ventas (hasta 7 días)
-                        </CardDescription>
+                        </CardDescription> */}
                         </div>
                     </div>
                 </CardHeader>
