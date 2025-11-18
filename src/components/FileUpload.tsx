@@ -28,7 +28,7 @@ const FileUpload = ({ onFileSelect, file }: FileUploadProps) => {
       setIsDragging(false);
 
       const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile && droppedFile.name.endsWith(".xlsx")) {
+      if (droppedFile && droppedFile.name.endsWith(".xlsx") || droppedFile.name.endsWith(".xls")) {
         onFileSelect(droppedFile);
         toast({
           title: "Archivo cargado",

@@ -34,8 +34,8 @@ const Training = () => {
         if(response.status_code == 200){
             setIsLoading(false)
             toast({
-                title: "Predicción completada",
-                description: "Los resultados están listos para visualizar.",
+                title: "Datos procesados",
+                description: "Ya puede generar una predicción.",
             })
             setFile(null)
         }else{
