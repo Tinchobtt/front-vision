@@ -206,7 +206,7 @@ const Results = () => {
                 }
             }
         }
-        return productoMasVendido.nombre
+        return productoMasVendido
     }
 
     return (
@@ -247,10 +247,10 @@ const Results = () => {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{getProductoMasVendido(data)}</div>
-                            {/* <p className="text-xs text-muted-foreground mt-1">
-                                7 días proyectados
-                            </p> */}
+                            <div className="text-2xl font-bold">{getProductoMasVendido(data).nombre}</div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Cantidad: {Math.round(getProductoMasVendido(data).cantidad)}
+                            </p>
                         </CardContent>
                     </Card>
             </div>
